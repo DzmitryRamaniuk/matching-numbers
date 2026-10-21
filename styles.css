@@ -164,6 +164,17 @@ body {
   cursor: default;
 }
 
+.cell.removed {
+  background: var(--empty);
+  border-color: transparent;
+  color: var(--muted);
+  cursor: default;
+}
+
+.cell.removed:active {
+  transform: none;
+}
+
 .controls {
   padding: 12px 16px calc(16px + env(safe-area-inset-bottom));
   background: var(--surface);

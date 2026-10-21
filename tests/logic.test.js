@@ -120,30 +120,16 @@ test('createBoard places exactly the requested count of digits 1-9', () => {
   assert.ok(cells.slice(42).every((c) => c === null));
 });
 
-test('addMore copies the numbers left under the board and leaves gaps alone', () => {
-  // 2 numbers left (1 and 2): copies go in a new row after the board, the gap stays empty
-  const cells = pad([1, null, null, 2]);
-  const next = L.addMore(cells, W);
-  assert.equal(next[1], null);
-  assert.equal(next[2], null);
-  assert.equal(next.length, 18);
-  assert.equal(next[9], 1);
-  assert.equal(next[10], 2);
-  assert.equal(next.filter((c) => c !== null).length, 4);
+test('addMore appends copies of the numbers left and keeps gaps as they are', () => {
+  assert.deepEqual(
+    L.addMore([1, 3, null, null, 1, 3]),
+    [1, 3, null, null, 1, 3, 1, 3, 1, 3]
+  );
 });
 
-test('addMore appends full rows of the same numbers in the same order', () => {
-  const cells = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const next = L.addMore(cells, W);
-  assert.equal(next.length, 18);
-  assert.deepEqual(next.slice(9), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
-});
-
-test('addMore pads a partial last row with empty cells', () => {
-  // 4 numbers on a 9-cell row: the copy row has 4 numbers and 5 empty cells
-  const next = L.addMore(pad([1, 2, 3, 4]), W);
-  assert.equal(next.length, 18);
-  assert.deepEqual(next.slice(9), [1, 2, 3, 4, null, null, null, null, null]);
+test('addMore appends the same numbers in the same order with no padding', () => {
+  const next = L.addMore([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  assert.deepEqual(next, [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 });
 
 test('a generated board can be solved greedily to a cleared state', () => {
@@ -155,4 +141,21 @@ test('a generated board can be solved greedily to a cleared state', () => {
     cells = L.removePair(cells, pair[0], pair[1]);
   }
   assert.equal(L.isCleared(cells), true);
+});
+
+test('dropSpentRows removes a row whose numbers are all removed and moves rows below up', () => {
+  // row 0: 1 and 2 removed (no live numbers) -> dropped; row 1: live 4, 6 kept
+  const cells = [null, null, null, 4, 6, null];
+  const spent = [1, 2, null, null, null, 5];
+  const next = L.dropSpentRows(cells, spent, 3);
+  assert.deepEqual(next.cells, [4, 6, null]);
+  assert.deepEqual(next.spent, [null, null, 5]);
+});
+
+test('dropSpentRows keeps rows with a live number or with nothing removed', () => {
+  const cells = [1, null, null, null, null, null];
+  const spent = [null, null, null, null, null, null];
+  const next = L.dropSpentRows(cells, spent, 3);
+  assert.deepEqual(next.cells, cells);
+  assert.deepEqual(next.spent, spent);
 });

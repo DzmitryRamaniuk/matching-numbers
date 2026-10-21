@@ -36,13 +36,11 @@
     return Array.from({ length }, (_, i) => (i < numbers ? randomDigit(rng) : null));
   }
 
-  // Copies every number still on the board under the current board, in order,
-  // as full rows. Empty cells already on the board are left alone.
-  function addMore(cells, columns) {
+  // Appends a copy of every number still on the board, in order, after the
+  // current board. Empty cells already on the board are left alone.
+  function addMore(cells) {
     const existing = cells.filter((cell) => cell !== null);
-    if (existing.length === 0) return cells;
-    const padding = (columns - (existing.length % columns)) % columns;
-    return [...cells, ...existing, ...Array(padding).fill(null)];
+    return [...cells, ...existing];
   }
 
   // Two numbers match when they are equal or add up to 10.
@@ -97,6 +95,23 @@
     return cells.every((cell) => cell === null);
   }
 
+  // Drops every row that holds no live numbers but at least one removed number
+  // (`spent` is the removed value per cell, or null). Rows below move up.
+  function dropSpentRows(cells, spent, width) {
+    const nextCells = [];
+    const nextSpent = [];
+    for (let start = 0; start < cells.length; start += width) {
+      const end = start + width;
+      const live = cells.slice(start, end).some((cell) => cell !== null);
+      const removed = spent.slice(start, end).some((value) => value !== null);
+      if (live || !removed) {
+        nextCells.push(...cells.slice(start, end));
+        nextSpent.push(...spent.slice(start, end));
+      }
+    }
+    return { cells: nextCells, spent: nextSpent };
+  }
+
   const api = {
     LEVELS,
     DEFAULT_SETTINGS,
@@ -111,6 +126,7 @@
     findMatchingPair,
     removePair,
     isCleared,
+    dropSpentRows,
   };
 
   if (typeof module !== 'undefined' && module.exports) {

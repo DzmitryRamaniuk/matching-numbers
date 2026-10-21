@@ -14,6 +14,7 @@
     findMatchingPair,
     removePair,
     isCleared,
+    dropSpentRows,
   } = window.MatchingLogic;
 
   const BEST_KEY = 'matching-numbers-best';
@@ -42,6 +43,8 @@
   let state;
 
   // Hint is a [from, to] pair of cell indexes, or null when nothing is highlighted.
+  // Spent holds the number that was removed from each cell (null if none), so the
+  // board can show it greyed out after the pair is gone.
   function onHint() {
     if (isOver()) return;
     state.hint = findMatchingPair(state.cells, state.columns);
@@ -65,8 +68,10 @@
   }
 
   function newGame() {
+    const cells = createBoard(settings.numbers, settings.columns);
     state = {
-      cells: createBoard(settings.numbers, settings.columns),
+      cells,
+      spent: cells.map(() => null),
       columns: settings.columns,
       selected: null,
       hint: null,
@@ -92,7 +97,12 @@
     } else if (selected === index) {
       state.selected = null;
     } else if (isMatch(cells[selected], cells[index]) && areConnected(cells, columns, selected, index)) {
-      state.cells = removePair(cells, selected, index);
+      const spent = [...state.spent];
+      spent[selected] = cells[selected];
+      spent[index] = cells[index];
+      const trimmed = dropSpentRows(removePair(cells, selected, index), spent, columns);
+      state.cells = trimmed.cells;
+      state.spent = trimmed.spent;
       state.selected = null;
       state.hint = null;
       state.score += 1;
@@ -105,7 +115,9 @@
 
   function onAddMore() {
     if (isOver() || state.rowsLeft === 0) return;
-    state.cells = addMore(state.cells, state.columns);
+    const next = addMore(state.cells);
+    state.spent = [...state.spent, ...Array(next.length - state.cells.length).fill(null)];
+    state.cells = next;
     state.rowsLeft -= 1;
     state.selected = null;
     state.hint = null;
@@ -120,11 +132,14 @@
   }
 
   function render() {
-    const { cells, selected, hint } = state;
+    const { cells, spent, selected, hint } = state;
 
     boardEl.style.setProperty('--cols', state.columns);
     boardEl.innerHTML = cells.map((value, i) => {
-      if (value === null) return '<div class="cell empty" aria-hidden="true"></div>';
+      if (value === null && spent[i] === null) return '<div class="cell empty" aria-hidden="true"></div>';
+      if (value === null) {
+        return `<button class="cell removed" data-index="${i}" disabled aria-label="${spent[i]} removed">${spent[i]}</button>`;
+      }
       const classes = ['cell'];
       if (i === selected) classes.push('selected');
       if (hint && hint.includes(i)) classes.push('hint');
