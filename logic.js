@@ -36,11 +36,27 @@
     return Array.from({ length }, (_, i) => (i < numbers ? randomDigit(rng) : null));
   }
 
-  // Appends a copy of every number still on the board, in order, after the
-  // current board. Empty cells already on the board are left alone.
-  function addMore(cells) {
+  // Writes a copy of every number still on the board, in order, starting at the
+  // empty cells at the end of the board (if any) and then on new rows. Empty
+  // cells in the middle are left alone. `spent` is the removed value per cell, or
+  // null; a removed number is not an empty cell, so it stops the end-fill.
+  function addMore(cells, spent) {
     const existing = cells.filter((cell) => cell !== null);
-    return [...cells, ...existing];
+    const nextCells = [...cells];
+    const nextSpent = [...spent];
+
+    let start = cells.length;
+    while (start > 0 && cells[start - 1] === null && spent[start - 1] === null) start--;
+
+    existing.forEach((value, k) => {
+      if (start + k < nextCells.length) {
+        nextCells[start + k] = value;
+      } else {
+        nextCells.push(value);
+        nextSpent.push(null);
+      }
+    });
+    return { cells: nextCells, spent: nextSpent };
   }
 
   // Two numbers match when they are equal or add up to 10.

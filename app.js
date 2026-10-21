@@ -38,6 +38,10 @@
   const startBtn = document.getElementById('start-game');
   const cancelBtn = document.getElementById('cancel-game');
 
+  const gameOverDialog = document.getElementById('game-over-dialog');
+  const finalScoreEl = document.getElementById('final-score');
+  const gameOverNewBtn = document.getElementById('game-over-new');
+
   // Settings used for the current game; the dialog edits copies of these.
   let settings = { ...DEFAULT_SETTINGS };
   let state;
@@ -67,7 +71,8 @@
     }
   }
 
-  function newGame() {
+  // Starts a fresh board with the current settings, keeping the given score.
+  function newBoard(score) {
     const cells = createBoard(settings.numbers, settings.columns);
     state = {
       cells,
@@ -75,15 +80,18 @@
       columns: settings.columns,
       selected: null,
       hint: null,
-      score: 0,
+      score,
       rowsLeft: ADD_ROW_LIMIT,
     };
+  }
+
+  function newGame() {
+    newBoard(0);
     render();
   }
 
   function isOver() {
-    return isCleared(state.cells) ||
-      (state.rowsLeft === 0 && findMatchingPair(state.cells, state.columns) === null);
+    return state.rowsLeft === 0 && findMatchingPair(state.cells, state.columns) === null;
   }
 
   function onCellTap(index) {
@@ -107,6 +115,7 @@
       state.hint = null;
       state.score += 1;
       if (state.score > readBest()) writeBest(state.score);
+      if (isCleared(state.cells)) newBoard(state.score);
     } else {
       state.selected = index;
     }
@@ -115,9 +124,9 @@
 
   function onAddMore() {
     if (isOver() || state.rowsLeft === 0) return;
-    const next = addMore(state.cells);
-    state.spent = [...state.spent, ...Array(next.length - state.cells.length).fill(null)];
-    state.cells = next;
+    const added = addMore(state.cells, state.spent);
+    state.cells = added.cells;
+    state.spent = added.spent;
     state.rowsLeft -= 1;
     state.selected = null;
     state.hint = null;
@@ -125,7 +134,6 @@
   }
 
   function statusText() {
-    if (isCleared(state.cells)) return 'Board cleared! You win.';
     if (isOver()) return 'No moves left. Game over.';
     if (findMatchingPair(state.cells, state.columns) === null) return 'No pairs left. Tap Add more.';
     return 'Tap two numbers that match or add to 10.';
@@ -151,6 +159,11 @@
     rowsLeftEl.textContent = state.rowsLeft;
     statusEl.textContent = statusText();
     addMoreBtn.disabled = isOver() || state.rowsLeft === 0;
+
+    if (isOver() && !gameOverDialog.open) {
+      finalScoreEl.textContent = state.score;
+      gameOverDialog.showModal();
+    }
   }
 
   // New game dialog. The level buttons only set the number count; the level
@@ -194,6 +207,13 @@
   columnsInput.addEventListener('input', updateDialog);
   cancelBtn.addEventListener('click', () => newGameDialog.close());
 
+  // The game-over dialog stays open until the player starts a new game.
+  gameOverDialog.addEventListener('cancel', (event) => event.preventDefault());
+  gameOverNewBtn.addEventListener('click', () => {
+    gameOverDialog.close();
+    openNewGame();
+  });
+
   newGameForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const draft = readDialog();
@@ -220,6 +240,7 @@
   });
 
   newGame();
+  openNewGame();
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {

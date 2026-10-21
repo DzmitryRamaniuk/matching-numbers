@@ -12,10 +12,12 @@
 </head>
 <body>
   <header class="topbar">
-    <h1>Matching Numbers</h1>
+    <div class="titlebar">
+      <h1>Matching Numbers</h1>
+      <button id="new-game" class="btn btn-primary" type="button">New game</button>
+    </div>
     <div class="scorebar">
       <div class="stat">Score <strong id="score">0</strong></div>
-      <button id="new-game" class="btn btn-primary" type="button">New game</button>
       <div class="stat">Best <strong id="best">0</strong></div>
     </div>
   </header>
@@ -58,6 +60,14 @@
         <button id="start-game" class="btn btn-primary" type="submit">Start</button>
       </div>
     </form>
+  </dialog>
+
+  <dialog id="game-over-dialog" class="help">
+    <h2>No moves left</h2>
+    <p class="rows-info">Score: <strong id="final-score">0</strong></p>
+    <div class="buttons">
+      <button id="game-over-new" class="btn btn-primary" type="button">New game</button>
+    </div>
   </dialog>
 
   <script src="logic.js"></script>

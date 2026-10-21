@@ -71,11 +71,18 @@ body {
   border-bottom: 1px solid var(--cell-border);
 }
 
+.titlebar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .topbar h1 {
   margin: 0;
   font-size: 1.05rem;
   font-weight: 700;
-  text-align: center;
 }
 
 .scorebar {
@@ -86,7 +93,7 @@ body {
   gap: 12px;
 }
 
-.scorebar .btn {
+.titlebar .btn {
   flex: none;
   min-height: 40px;
   padding: 0 18px;

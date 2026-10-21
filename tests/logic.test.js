@@ -120,16 +120,35 @@ test('createBoard places exactly the requested count of digits 1-9', () => {
   assert.ok(cells.slice(42).every((c) => c === null));
 });
 
+const noSpent = (cells) => cells.map(() => null);
+
 test('addMore appends copies of the numbers left and keeps gaps as they are', () => {
+  const cells = [1, 3, null, null, 1, 3];
   assert.deepEqual(
-    L.addMore([1, 3, null, null, 1, 3]),
+    L.addMore(cells, noSpent(cells)).cells,
     [1, 3, null, null, 1, 3, 1, 3, 1, 3]
   );
 });
 
 test('addMore appends the same numbers in the same order with no padding', () => {
-  const next = L.addMore([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-  assert.deepEqual(next, [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const cells = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const next = L.addMore(cells, noSpent(cells));
+  assert.deepEqual(next.cells, [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  assert.deepEqual(next.spent, noSpent(next.cells));
+});
+
+test('addMore fills the empty cells at the end of the last row first, then new rows', () => {
+  const cells = [1, 2, 3, 4, 5, 6, 7, null, null];
+  const next = L.addMore(cells, noSpent(cells));
+  assert.deepEqual(next.cells, [1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7]);
+});
+
+test('addMore does not write over a removed number at the end of the board', () => {
+  const cells = [1, null];
+  const spent = [null, 2];
+  const next = L.addMore(cells, spent);
+  assert.deepEqual(next.cells, [1, null, 1]);
+  assert.deepEqual(next.spent, [null, 2, null]);
 });
 
 test('a generated board can be solved greedily to a cleared state', () => {
