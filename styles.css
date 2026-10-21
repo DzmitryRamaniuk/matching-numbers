@@ -63,8 +63,8 @@ body {
 
 .topbar {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
   padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
   background: var(--surface);
@@ -76,6 +76,20 @@ body {
   font-size: 1.05rem;
   font-weight: 700;
   text-align: center;
+}
+
+.scorebar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.scorebar .btn {
+  flex: none;
+  min-height: 40px;
+  padding: 0 18px;
 }
 
 .stat {

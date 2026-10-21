@@ -1,4 +1,4 @@
-const CACHE = 'matching-numbers-v4';
+const CACHE = 'matching-numbers-v5';
 const ASSETS = [
   './',
   './index.html',

@@ -12,9 +12,12 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="stat">Score <strong id="score">0</strong></div>
     <h1>Matching Numbers</h1>
-    <div class="stat">Best <strong id="best">0</strong></div>
+    <div class="scorebar">
+      <div class="stat">Score <strong id="score">0</strong></div>
+      <button id="new-game" class="btn btn-primary" type="button">New game</button>
+      <div class="stat">Best <strong id="best">0</strong></div>
+    </div>
   </header>
 
   <main class="play-area">
@@ -25,7 +28,6 @@
     <p id="status" class="status" role="status"></p>
     <div class="buttons">
       <button id="add-row" class="btn" type="button">Add row (<span id="rows-left">5</span>)</button>
-      <button id="new-game" class="btn btn-primary" type="button">New game</button>
       <button id="hint" class="btn" type="button">Hint</button>
     </div>
   </footer>
