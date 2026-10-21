@@ -22,6 +22,9 @@
   const addRowBtn = document.getElementById('add-row');
   const rowsLeftEl = document.getElementById('rows-left');
   const newGameBtn = document.getElementById('new-game');
+  const helpBtn = document.getElementById('help');
+  const helpDialog = document.getElementById('help-dialog');
+  const helpCloseBtn = document.getElementById('help-close');
 
   let state;
 
@@ -112,6 +115,8 @@
   });
   addRowBtn.addEventListener('click', onAddRow);
   newGameBtn.addEventListener('click', newGame);
+  helpBtn.addEventListener('click', () => helpDialog.showModal());
+  helpCloseBtn.addEventListener('click', () => helpDialog.close());
 
   newGame();
 

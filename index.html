@@ -26,8 +26,20 @@
     <div class="buttons">
       <button id="add-row" class="btn" type="button">Add row (<span id="rows-left">5</span>)</button>
       <button id="new-game" class="btn btn-primary" type="button">New game</button>
+      <button id="help" class="btn btn-icon" type="button" aria-label="How to play">?</button>
     </div>
   </footer>
+
+  <dialog id="help-dialog" class="help">
+    <h2>How to play</h2>
+    <ul>
+      <li>Tap two numbers that are <strong>equal</strong> or add up to <strong>10</strong>.</li>
+      <li>They must touch in a row, column or diagonal. Removed cells don't block the way.</li>
+      <li>Stuck? Tap <strong>Add row</strong> to add 9 more numbers. You get 5 per game.</li>
+      <li>Clear every number to win. If no pairs are left and no rows remain, the game is over.</li>
+    </ul>
+    <button id="help-close" class="btn btn-primary" type="button">Got it</button>
+  </dialog>
 
   <script src="logic.js"></script>
   <script src="app.js"></script>

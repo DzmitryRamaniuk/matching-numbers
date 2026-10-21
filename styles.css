@@ -188,3 +188,40 @@ body {
   opacity: 0.45;
   cursor: default;
 }
+
+.btn-icon {
+  flex: 0 0 48px;
+  font-size: 1.25rem;
+}
+
+.help {
+  width: min(90vw, 360px);
+  padding: 20px;
+  border: 1px solid var(--cell-border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.help::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.help h2 {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+}
+
+.help ul {
+  margin: 0 0 20px;
+  padding-left: 20px;
+  line-height: 1.5;
+}
+
+.help li + li {
+  margin-top: 8px;
+}
+
+.help .btn {
+  width: 100%;
+}
