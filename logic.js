@@ -1,21 +1,43 @@
 (function (root) {
   'use strict';
 
-  // Board is a flat array read left to right, WIDTH cells per row.
-  // A removed cell is null.
-  const WIDTH = 9;
-  const START_ROWS = 4;
-  const ADD_ROW_LIMIT = 5;
+  // Board is a flat array read left to right, `columns` cells per row.
+  // A removed or unused cell is null.
   const TARGET_SUM = 10;
+  const ADD_ROW_LIMIT = 5;
+
+  const LEVELS = { low: 30, medium: 42, hard: 54 };
+  const DEFAULT_SETTINGS = { numbers: LEVELS.medium, columns: 9 };
+  const LIMITS = { numbersMin: 10, numbersMax: 150, columnsMin: 3, columnsMax: 12 };
 
   const randomDigit = (rng) => Math.floor(rng() * 9) + 1;
 
-  function createBoard(rng = Math.random) {
-    return Array.from({ length: START_ROWS * WIDTH }, () => randomDigit(rng));
+  function rowsFor(numbers, columns) {
+    return Math.ceil(numbers / columns);
   }
 
-  function addRow(cells, rng = Math.random) {
-    return [...cells, ...Array.from({ length: WIDTH }, () => randomDigit(rng))];
+  // Returns an error message, or null when the settings are usable.
+  function validateSettings({ numbers, columns }) {
+    if (!Number.isInteger(numbers) || numbers < LIMITS.numbersMin || numbers > LIMITS.numbersMax) {
+      return `Numbers must be between ${LIMITS.numbersMin} and ${LIMITS.numbersMax}.`;
+    }
+    if (numbers % 2 !== 0) {
+      return 'Numbers must be even so every number can be paired.';
+    }
+    if (!Number.isInteger(columns) || columns < LIMITS.columnsMin || columns > LIMITS.columnsMax) {
+      return `Columns must be between ${LIMITS.columnsMin} and ${LIMITS.columnsMax}.`;
+    }
+    return null;
+  }
+
+  // Fills the first `numbers` cells with digits; the rest of the last row stays empty.
+  function createBoard(numbers, columns, rng = Math.random) {
+    const length = rowsFor(numbers, columns) * columns;
+    return Array.from({ length }, (_, i) => (i < numbers ? randomDigit(rng) : null));
+  }
+
+  function addRow(cells, columns, rng = Math.random) {
+    return [...cells, ...Array.from({ length: columns }, () => randomDigit(rng))];
   }
 
   // Two numbers match when they are equal or add up to 10.
@@ -47,7 +69,7 @@
     });
   }
 
-  function findMatchingPair(cells, width = WIDTH) {
+  function findMatchingPair(cells, width) {
     for (let a = 0; a < cells.length; a++) {
       if (cells[a] === null) continue;
       for (let b = a + 1; b < cells.length; b++) {
@@ -71,9 +93,12 @@
   }
 
   const api = {
-    WIDTH,
-    START_ROWS,
+    LEVELS,
+    DEFAULT_SETTINGS,
+    LIMITS,
     ADD_ROW_LIMIT,
+    rowsFor,
+    validateSettings,
     createBoard,
     addRow,
     isMatch,

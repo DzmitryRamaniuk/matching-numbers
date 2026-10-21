@@ -9,6 +9,7 @@
   --accent: #2f80ed;
   --accent-text: #ffffff;
   --empty: #e3eaf2;
+  --hint: #20b15a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -103,10 +104,11 @@ body {
 }
 
 .board {
+  --cols: 9;
   width: 100%;
   max-width: 480px;
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
+  grid-template-columns: repeat(var(--cols), 1fr);
   gap: 4px;
 }
 
@@ -135,6 +137,11 @@ body {
   background: var(--selected);
   border-color: var(--selected);
   color: #1b1b1b;
+}
+
+.cell.hint {
+  box-shadow: 0 0 0 3px var(--hint);
+  border-color: var(--hint);
 }
 
 .cell.empty {
@@ -189,11 +196,6 @@ body {
   cursor: default;
 }
 
-.btn-icon {
-  flex: 0 0 48px;
-  font-size: 1.25rem;
-}
-
 .help {
   width: min(90vw, 360px);
   padding: 20px;
@@ -224,4 +226,66 @@ body {
 
 .help .btn {
   width: 100%;
+}
+
+.help .buttons .btn {
+  width: auto;
+}
+
+.help .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 14px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.help .field input {
+  font: inherit;
+  font-size: 1.1rem;
+  color: var(--text);
+  background: var(--cell);
+  border: 1px solid var(--cell-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-height: 44px;
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.seg {
+  min-height: 44px;
+  border: 1px solid var(--cell-border);
+  border-radius: 10px;
+  background: var(--cell);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.seg[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.rows-info {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+.rows-info strong {
+  color: var(--text);
+}
+
+.error {
+  margin: 0 0 14px;
+  color: #d64545;
+  font-size: 0.9rem;
 }

@@ -89,14 +89,39 @@ test('isCleared is true only when every cell is removed', () => {
   assert.equal(L.isCleared([null, 1]), false);
 });
 
-test('createBoard makes a full starting board of digits 1-9', () => {
-  const cells = L.createBoard(() => 0.5);
-  assert.equal(cells.length, L.START_ROWS * W);
-  assert.ok(cells.every((c) => Number.isInteger(c) && c >= 1 && c <= 9));
+test('default settings are medium: 42 numbers in 9 columns, 5 rows', () => {
+  assert.equal(L.DEFAULT_SETTINGS.numbers, 42);
+  assert.equal(L.DEFAULT_SETTINGS.columns, 9);
+  assert.equal(L.rowsFor(42, 9), 5);
 });
 
-test('addRow appends one row of digits', () => {
-  const cells = L.addRow(board([1, 2, 3, 4, 5, 6, 7, 8, 9]), () => 0.0);
+test('rowsFor recalculates from numbers and columns', () => {
+  assert.equal(L.rowsFor(30, 9), 4);
+  assert.equal(L.rowsFor(54, 9), 6);
+  assert.equal(L.rowsFor(42, 6), 7);
+  assert.equal(L.rowsFor(40, 10), 4);
+});
+
+test('validateSettings accepts usable values and rejects others', () => {
+  assert.equal(L.validateSettings({ numbers: 42, columns: 9 }), null);
+  assert.notEqual(L.validateSettings({ numbers: 9, columns: 9 }), null);
+  assert.notEqual(L.validateSettings({ numbers: 151, columns: 9 }), null);
+  assert.notEqual(L.validateSettings({ numbers: 41, columns: 9 }), null);
+  assert.notEqual(L.validateSettings({ numbers: 42, columns: 2 }), null);
+  assert.notEqual(L.validateSettings({ numbers: 42, columns: 13 }), null);
+  assert.notEqual(L.validateSettings({ numbers: NaN, columns: 9 }), null);
+});
+
+test('createBoard places exactly the requested count of digits 1-9', () => {
+  const cells = L.createBoard(42, 9, () => 0.5);
+  assert.equal(cells.length, 45); // 5 rows of 9
+  assert.equal(cells.filter((c) => c !== null).length, 42);
+  assert.ok(cells.slice(0, 42).every((c) => Number.isInteger(c) && c >= 1 && c <= 9));
+  assert.ok(cells.slice(42).every((c) => c === null));
+});
+
+test('addRow appends one row of the given width', () => {
+  const cells = L.addRow(board([1, 2, 3, 4, 5, 6, 7, 8, 9]), 9, () => 0.0);
   assert.equal(cells.length, 18);
   assert.equal(cells[9], 1);
 });
