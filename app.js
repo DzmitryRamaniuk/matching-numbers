@@ -8,7 +8,7 @@
     rowsFor,
     validateSettings,
     createBoard,
-    addRow,
+    addMore,
     isMatch,
     areConnected,
     findMatchingPair,
@@ -22,7 +22,7 @@
   const scoreEl = document.getElementById('score');
   const bestEl = document.getElementById('best');
   const statusEl = document.getElementById('status');
-  const addRowBtn = document.getElementById('add-row');
+  const addMoreBtn = document.getElementById('add-more');
   const rowsLeftEl = document.getElementById('rows-left');
   const newGameBtn = document.getElementById('new-game');
   const hintBtn = document.getElementById('hint');
@@ -103,9 +103,9 @@
     render();
   }
 
-  function onAddRow() {
+  function onAddMore() {
     if (isOver() || state.rowsLeft === 0) return;
-    state.cells = addRow(state.cells, state.columns);
+    state.cells = addMore(state.cells, state.columns);
     state.rowsLeft -= 1;
     state.selected = null;
     state.hint = null;
@@ -115,7 +115,7 @@
   function statusText() {
     if (isCleared(state.cells)) return 'Board cleared! You win.';
     if (isOver()) return 'No moves left. Game over.';
-    if (findMatchingPair(state.cells, state.columns) === null) return 'No pairs left. Add a row.';
+    if (findMatchingPair(state.cells, state.columns) === null) return 'No pairs left. Tap Add more.';
     return 'Tap two numbers that match or add to 10.';
   }
 
@@ -135,7 +135,7 @@
     bestEl.textContent = readBest();
     rowsLeftEl.textContent = state.rowsLeft;
     statusEl.textContent = statusText();
-    addRowBtn.disabled = isOver() || state.rowsLeft === 0;
+    addMoreBtn.disabled = isOver() || state.rowsLeft === 0;
   }
 
   // New game dialog. The level buttons only set the number count; the level
@@ -192,7 +192,7 @@
     const cell = event.target.closest('.cell:not(.empty)');
     if (cell) onCellTap(Number(cell.dataset.index));
   });
-  addRowBtn.addEventListener('click', onAddRow);
+  addMoreBtn.addEventListener('click', onAddMore);
   newGameBtn.addEventListener('click', openNewGame);
   hintBtn.addEventListener('click', onHint);
 

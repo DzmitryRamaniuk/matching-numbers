@@ -10,7 +10,7 @@ install on an Android phone as a home-screen app. It works offline after the fir
   - they are equal or add up to 10, and
   - they touch in a row, column or diagonal, or every cell between them is already removed.
 - **Hint** highlights a pair you can remove. Tap anywhere other than the highlighted numbers to clear it.
-- When no pairs are left, use **Add row** to append 9 more numbers (5 uses per game).
+- When no pairs are left, use **Add more** to add one new number for each number still on the board (5 uses per game). New numbers fill empty cells first.
 - The game ends when the board is cleared (win) or no pairs are left and no rows remain (loss).
 
 ## Run locally

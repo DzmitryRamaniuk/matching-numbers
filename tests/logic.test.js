@@ -120,10 +120,22 @@ test('createBoard places exactly the requested count of digits 1-9', () => {
   assert.ok(cells.slice(42).every((c) => c === null));
 });
 
-test('addRow appends one row of the given width', () => {
-  const cells = L.addRow(board([1, 2, 3, 4, 5, 6, 7, 8, 9]), 9, () => 0.0);
-  assert.equal(cells.length, 18);
-  assert.equal(cells[9], 1);
+test('addMore adds one number per number left, filling empty cells first', () => {
+  // 2 numbers left, so 2 new ones: they fill the two empty cells at index 1 and 2
+  const cells = pad([1, null, null, 2]);
+  const next = L.addMore(cells, W, () => 0.0); // every new digit is 1
+  assert.equal(next.filter((c) => c !== null).length, 4);
+  assert.equal(next[1], 1);
+  assert.equal(next[2], 1);
+  assert.equal(next.length, cells.length);
+});
+
+test('addMore appends full rows when the empty cells run out', () => {
+  // 9 numbers, no empty cells: 9 new numbers appended as one full row
+  const cells = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const next = L.addMore(cells, W, () => 0.0);
+  assert.equal(next.length, 18);
+  assert.equal(next.slice(9).filter((c) => c !== null).length, 9);
 });
 
 test('a generated board can be solved greedily to a cleared state', () => {

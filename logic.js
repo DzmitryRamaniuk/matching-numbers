@@ -36,8 +36,22 @@
     return Array.from({ length }, (_, i) => (i < numbers ? randomDigit(rng) : null));
   }
 
-  function addRow(cells, columns, rng = Math.random) {
-    return [...cells, ...Array.from({ length: columns }, () => randomDigit(rng))];
+  // Adds one new number for each number still on the board. New numbers fill
+  // empty cells in reading order first; any extra are appended as full rows.
+  function addMore(cells, columns, rng = Math.random) {
+    const count = cells.filter((cell) => cell !== null).length;
+    const digits = Array.from({ length: count }, () => randomDigit(rng));
+
+    const next = [...cells];
+    let used = 0;
+    for (let i = 0; i < next.length && used < count; i++) {
+      if (next[i] === null) next[i] = digits[used++];
+    }
+
+    const rest = digits.slice(used);
+    if (rest.length === 0) return next;
+    const padding = (columns - (rest.length % columns)) % columns;
+    return [...next, ...rest, ...Array(padding).fill(null)];
   }
 
   // Two numbers match when they are equal or add up to 10.
@@ -100,7 +114,7 @@
     rowsFor,
     validateSettings,
     createBoard,
-    addRow,
+    addMore,
     isMatch,
     areConnected,
     findMatchingPair,
