@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1b2a3a">
+  <meta name="description" content="Matching Numbers: clear the board by pairing numbers that are equal or add up to 10.">
+  <title>Matching Numbers</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="stat">Score <strong id="score">0</strong></div>
+    <h1>Matching Numbers</h1>
+    <div class="stat">Best <strong id="best">0</strong></div>
+  </header>
+
+  <main class="play-area">
+    <div id="board" class="board"></div>
+  </main>
+
+  <footer class="controls">
+    <p id="status" class="status" role="status"></p>
+    <div class="buttons">
+      <button id="add-row" class="btn" type="button">Add row (<span id="rows-left">5</span>)</button>
+      <button id="new-game" class="btn btn-primary" type="button">New game</button>
+    </div>
+  </footer>
+
+  <script src="logic.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

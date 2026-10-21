@@ -1,0 +1,19 @@
+{
+  "name": "Matching Numbers",
+  "short_name": "Matching",
+  "description": "Clear the board by pairing numbers that are equal or add up to 10.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f7fb",
+  "theme_color": "#1b2a3a",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
