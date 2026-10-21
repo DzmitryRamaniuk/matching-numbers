@@ -1,31 +1,19 @@
-const CACHE = 'matching-numbers-v6';
-const ASSETS = [
-  './',
-  './index.html',
-  './styles.css',
-  './logic.js',
-  './app.js',
-  './manifest.webmanifest',
-  './icon.svg',
-];
+// Service worker without file caching. It clears any caches left by earlier
+// versions and passes every request straight to the network. The fetch handler
+// is kept so the browser still offers the install prompt.
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
 
-// Cache first, then network; falls back to cached index for navigations.
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request).catch(() => caches.match('./index.html')))
-  );
+  event.respondWith(fetch(event.request));
 });

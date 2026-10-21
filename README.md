@@ -1,7 +1,7 @@
 # Matching Numbers
 
 A personal clone of the Matching Numbers puzzle. It is a plain web app that you
-install on an Android phone as a home-screen app. It works offline after the first load.
+install on an Android phone as a home-screen app. It needs a network connection, because the service worker does not cache files.
 
 ## Rules
 
@@ -22,7 +22,7 @@ npm test           # runs the rule tests
 
 ## Install on an Android phone
 
-Chrome only offers "Install app" and offline mode on HTTPS (or localhost), so host the
+Chrome only offers "Install app" on HTTPS (or localhost), so host the
 folder somewhere with HTTPS, for example GitHub Pages or Vercel. Then:
 
 1. Open the URL in Chrome on the phone.
@@ -36,5 +36,5 @@ folder somewhere with HTTPS, for example GitHub Pages or Vercel. Then:
 | `app.js` | Screen rendering and tap handling |
 | `index.html`, `styles.css` | Layout and theme (follows system dark mode) |
 | `manifest.webmanifest`, `icon.svg` | Home-screen install metadata and icon |
-| `sw.js` | Service worker that caches the app for offline use |
+| `sw.js` | Service worker with no file caching; it clears old caches and keeps the install prompt |
 | `tests/logic.test.js` | Tests for the rules |
