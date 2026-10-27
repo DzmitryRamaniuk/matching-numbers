@@ -30,10 +30,27 @@
     return null;
   }
 
-  // Fills the first `numbers` cells with digits; the rest of the last row stays empty.
+  // Shuffles in place (Fisher-Yates) and returns the same array.
+  function shuffle(values, rng) {
+    for (let i = values.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [values[i], values[j]] = [values[j], values[i]];
+    }
+    return values;
+  }
+
+  // Fills the first `numbers` cells with shuffled digits. The digits come in
+  // pairs that add up to 10 (1 and 9, 3 and 7, 5 and 5, ...), so every number
+  // on a new board has a partner. The rest of the last row stays empty.
   function createBoard(numbers, columns, rng = Math.random) {
     const length = rowsFor(numbers, columns) * columns;
-    return Array.from({ length }, (_, i) => (i < numbers ? randomDigit(rng) : null));
+    const values = [];
+    for (let i = 0; i < numbers / 2; i++) {
+      const a = randomDigit(rng);
+      values.push(a, TARGET_SUM - a);
+    }
+    shuffle(values, rng);
+    return Array.from({ length }, (_, i) => (i < numbers ? values[i] : null));
   }
 
   // Writes a copy of every number still on the board, in order, starting at the

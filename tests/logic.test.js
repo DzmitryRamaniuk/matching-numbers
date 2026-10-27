@@ -120,6 +120,21 @@ test('createBoard places exactly the requested count of digits 1-9', () => {
   assert.ok(cells.slice(42).every((c) => c === null));
 });
 
+test('createBoard makes every number pair with one that adds up to 10', () => {
+  for (let run = 0; run < 20; run++) {
+    const cells = L.createBoard(42, 9);
+    const live = cells.filter((c) => c !== null);
+    for (let v = 1; v <= 9; v++) {
+      const count = live.filter((c) => c === v).length;
+      if (v === 5) {
+        assert.equal(count % 2, 0);
+      } else {
+        assert.equal(count, live.filter((c) => c === 10 - v).length);
+      }
+    }
+  }
+});
+
 const noSpent = (cells) => cells.map(() => null);
 
 test('addMore appends copies of the numbers left and keeps gaps as they are', () => {

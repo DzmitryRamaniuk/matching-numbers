@@ -5,7 +5,7 @@ install on an Android phone as a home-screen app. The service worker caches the 
 
 ## Rules
 
-- The board is a grid 9 cells wide.
+- The board is a grid 9 cells wide. Its numbers come in pairs that add up to 10 (for example 1 and 9, 3 and 7, 5 and 5), shuffled into random places.
 - Tap a number, then tap another number. They are removed if:
   - they are equal or add up to 10, and
   - they touch in a row, column or diagonal, or every cell between them is already removed.
